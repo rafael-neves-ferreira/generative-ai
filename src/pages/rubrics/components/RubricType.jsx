@@ -6,7 +6,7 @@ const RubricType1 = (props) => {
             <li className='list-disc'>{props.rubric.name}</li>
             <div className='flex space-x-4 justify-end'>
                 <p>NB caracteres:</p>
-                <input type="number" max='1500' onChange={(e) => { props.changeRubricDefaultValue(e.target.value, props.rubric.id) }} className='border w-2/12 text-center h-6' />
+                <input type="number" max={1500} onChange={(e) => { props.changeRubricDefaultValue(e.target.value, props.rubric.id) }} className='border w-2/12 text-center h-6' />
             </div>
         </div >
     )
@@ -18,7 +18,7 @@ const RubricType2 = (props) => {
             <li className='list-disc'>{props.rubric.name}</li>
             <div className='flex space-x-4 justify-end'>
                 <p>NB caracteres:</p>
-                <input type="number" max='1500' onChange={(e) => { props.changeRubricDefaultValue(e.target.value, props.rubric.id) }} className='border w-2/12 text-center h-6' />
+                <input type="number" max={1500} maxLength={100} onChange={(e) => { props.changeRubricDefaultValue(e.target.value, props.rubric.id) }} className='border w-2/12 text-center h-6' />
             </div>
         </div >
     )

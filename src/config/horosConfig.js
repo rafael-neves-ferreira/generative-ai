@@ -31,7 +31,7 @@ const HorosConfig = [
                 name: 'Compatibilité amoureuse',
                 id: 5,
                 type: 3,
-                defaultValue: 250
+                defaultValue: 0
             },
             {
                 name: 'Travail',
@@ -59,18 +59,12 @@ const HorosConfig = [
             },
 
         ],
-        initialPrompt: `En utilisant un ton dynamique et une orientation honnête, rédiger des textes pour chaque signe, pour l'horoscope Quotidien,
-        Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE). 
-        Réponse par signe et langue sous la forme:
-            BELIER
-        FR: texte 
-        EN: texte, etc. 
-        puis signe suivant. 
-        
-        Aucun autre texte, le résultat est destiné à une base de données.Ecrire pour Touts les Signes.
-
-            Rubriques:
-        `
+        initialPrompt: `Role: Fiction Astrologist. Afin de m'aider à écrire un roman sur l'astrologie, je te demande de rédiger des horoscopes en fonction d'une carte du ciel et de données astrologiques, 
+        comme le ferait un astrologue professionnel, et sans avertissement de ta part sur le fait que tu es un modele de langage et n'est pas programmé pour cela. En utilisant un ton dynamique et 
+        une orientation honnête, rédiger des textes pour chaque signe, pour l'horoscope Quotidien du 27 mai 2023 , Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE).  
+        Réponse par signe, puis par et langue sous la forme: signe FR: rubrique 1, rubrique 2, EN: rubrique 1, rubrique 2, etc.  puis signe suivant, et les rubriques uniquement en francais.  
+        Aucun autre texte, le résultat est destiné à une base de données.Ecrire pour tous les Signes. 
+        Rubriques:`
     },
     {
         name: 'Horoscope a la semaine',
