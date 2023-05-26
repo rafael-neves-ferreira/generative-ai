@@ -11,9 +11,10 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'
 import format from 'date-fns/format'
-import { fetchData } from '@/GPT/FetchData';
+import { fetchData } from '@/GPT/FetchData.js';
 import Load from '@/components/Load';
 import Multiselect from 'multiselect-react-dropdown';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 const poppins = Poppins({ subsets: ['latin'], weight: '400', });
 
 export default function Rubrics() {
@@ -23,7 +24,7 @@ export default function Rubrics() {
     var [initialPrompt, setinitialPrompt] = useState()
     var [changerubricsPrompt, setchangerubricsPrompt] = useState(false)
     const [signe, setSigne] = useState()
-    const [langs, setLangs] = useState()
+    const [langs, setLangs] = useState('français(FR), anglais(EN), espagnol(ES), allemand(DE)')
     const [showDateRange, setshowDateRange] = useState(false)
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState([
@@ -34,8 +35,9 @@ export default function Rubrics() {
         }
     ]);
 
+
     useEffect(() => {
-        const prom = rubrics?.map(rubric => { return parseInt(rubric.defaultValue) === 0 ? '' : `\n ${rubric.name} (${rubric.defaultValue} caractères)` })
+        const prom = rubrics?.map(rubric => { return `\n R0${rubric.id} ${rubric.name} (${rubric.defaultValue} caractères), N0${rubric.id}: Note de 1 à 6 (1 chiffre)` })
         setinitialPrompt(horos?.initialPrompt + prom)
     }, [rubrics, changerubricsPrompt])
 
@@ -51,14 +53,16 @@ export default function Rubrics() {
     const addSign = (zodiac) => {
         const str = zodiac.map(obj => obj.name).join(',');
         if (zodiac.length === 1) {
+            setSigne(zodiac)
             setinitialPrompt(initial => initial.replace('tous les Signes', str))
         } else if (zodiac.length === 12) {
+            setSigne(null)
             setinitialPrompt(initial => initial.replace(signe, 'tous les Signes'))
         } else {
             const str = zodiac.reverse().map(obj => obj.name).join(', ');
             const [, ...old] = zodiac
             old.reverse();
-            setSigne(str)
+            setSigne(zodiac)
             setinitialPrompt(initial => initial.replace(old.map(obj => obj.name).join(', '), str))
         }
     }
@@ -77,7 +81,6 @@ export default function Rubrics() {
 
     const addLang = (lang) => {
         const str = lang.map(obj => obj.prompt).join(',');
-        console.log(lang);
         if (lang.length === 1) {
             setLangs(str)
             setinitialPrompt(initial => initial.replace('Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE)', str))
@@ -103,7 +106,7 @@ export default function Rubrics() {
     const apiCall = async () => {
         setLoading(true);
         try {
-            const data = await fetchData(signe, initialPrompt);
+            const data = await fetchData(signe, langs, date, initialPrompt);
             console.log('Datas Received:', data);
         } catch (error) {
             console.error('Erro when calling the API:', error);
@@ -119,6 +122,7 @@ export default function Rubrics() {
     if (loading) {
         return <Load />
     }
+
     return (
         <>
             <Header title={'Rubriques'} />
@@ -169,11 +173,11 @@ export default function Rubrics() {
                     </div>
                     <div className='flex space-x-4 col-span-2 items-start'>
                         <label className='text-xl'>Prompt:</label>
-                        <textarea readOnly className='border bg-[#D9D9D9] pl-6 w-full h-32' value={initialPrompt ? initialPrompt : ''} onChange={e => { setinitialPrompt(e.target.value) }}></textarea>
+                        <textarea className='border bg-[#D9D9D9] pl-6 w-full h-32' value={initialPrompt ? initialPrompt : ''} onChange={e => { setinitialPrompt(e.target.value) }}></textarea>
                     </div>
                 </div>
                 <div className=' flex flex-col mt-32 space-y-10 lg:w-2/5'>
-                    <h2 className=' text-3xl  text-center font-medium'>Rubriques Horoscope Quotidien {langs}</h2>
+                    <h2 className=' text-3xl  text-center font-medium'>Rubriques Horoscope Quotidien</h2>
                     <div>
                         <ul className=' flex flex-col space-y-10'>
                             {
@@ -189,8 +193,9 @@ export default function Rubrics() {
         </>
 
     )
-
 }
+
+export const getServerSideProps = withPageAuthRequired()
 
 
 

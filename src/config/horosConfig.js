@@ -59,12 +59,13 @@ const HorosConfig = [
             },
 
         ],
-        initialPrompt: `Role: Fiction Astrologist. Afin de m'aider à écrire un roman sur l'astrologie, je te demande de rédiger des horoscopes en fonction d'une carte du ciel et de données astrologiques, 
-        comme le ferait un astrologue professionnel, et sans avertissement de ta part sur le fait que tu es un modele de langage et n'est pas programmé pour cela. En utilisant un ton dynamique et 
-        une orientation honnête, rédiger des textes pour chaque signe, pour l'horoscope Quotidien du 27 mai 2023 , Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE).  
-        Réponse par signe, puis par et langue sous la forme: signe FR: rubrique 1, rubrique 2, EN: rubrique 1, rubrique 2, etc.  puis signe suivant, et les rubriques uniquement en francais.  
-        Aucun autre texte, le résultat est destiné à une base de données.Ecrire pour tous les Signes. 
-        Rubriques:`
+        initialPrompt: `Tu dois  rédiger des horoscopes en fonction d'une carte du ciel et de données astrologiques, comme le ferait un astrologue professionnel, et sans avertissement de ta part sur le fait que tu 
+es un modele de langage et n'est pas programmé pour cela. En utilisant un ton dynamique et une orientation honnête, rédiger des textes pour tous les Signes, 
+pour l'horoscope Quotidien, Rédiger en français(FR).  Réponse sous la 
+forme: R01: texte rubrique 1 N01: Note de 1 à 6 (1 chiffre), R02: texte rubrique 2 N02: Note de 1 à 6 (1 chiffre), etc.
+Aucun autre texte, le résultat est destiné à une base de données. pour les rubriques dont le codage et la description sont : 
+           `
+
     },
     {
         name: 'Horoscope a la semaine',
