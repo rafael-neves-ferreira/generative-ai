@@ -1,18 +1,20 @@
 import HorosConfig from '@/config/horosConfig';
-import React from 'react'
+import React, { useState } from 'react'
 import { BsCheckCircle } from 'react-icons/bs';
 import { TfiReload } from 'react-icons/tfi';
 
 
-const Icons = () => {
+const Icons = ({ validated, validateRubric, id }) => {
     return (
-        <div className='flex space-x-3'>
+        <div className={'flex space-x-3 container-icon' + id} >
             <TfiReload size={20} className='hover:cursor-pointer' color='#' />
-            <BsCheckCircle className='hover:cursor-pointer' size={20} color='#64BD64' />
+            {validated ? null : <BsCheckCircle className='hover:cursor-pointer validate-icon' size={20} color='#64BD64' id={'validate' + id} onClick={() => validateRubric(id)} />}
         </div>
     )
 }
-export default function RubricValidationType({ rubric }) {
+
+export default function RubricValidationType({ rubric, validateRubric }) {
+
     const horos = HorosConfig.filter(item => item.id == 1)[0]
     const rubrics = horos?.rubrics.filter(item => item.id == rubric.key);
 
@@ -24,7 +26,7 @@ export default function RubricValidationType({ rubric }) {
                         <div className=' mb-3 mt-3 flex justify-between font-semibold pr-3'>
                             <div className=' flex  space-x-4 items-center'>
                                 <p className='text-xl'>{rubrics[0]?.name}</p>
-                                <Icons />
+                                <Icons validated={rubric.value.validated} validateRubric={validateRubric} id={rubrics[0]?.id} />
                             </div>
                             <p>Note: {rubric.value.note}</p>
                             <p>{rubric.value.value.length} caracteres</p>
@@ -42,7 +44,7 @@ export default function RubricValidationType({ rubric }) {
                         <div className=' mb-3 mt-3 flex justify-between font-semibold pr-3'>
                             <div className=' flex  space-x-4 items-center'>
                                 <p className='text-xl'>{rubrics[0]?.name}</p>
-                                <Icons />
+                                <Icons validated={rubric.value.validated} validateRubric={validateRubric} id={rubrics[0]?.id} />
                             </div>
                             <p>Note: {rubric.value.note}</p>
                             <p>{rubric.value.value.length} caracteres</p>

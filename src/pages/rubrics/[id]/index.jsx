@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Poppins } from 'next/font/google'
-import Header from '@/components/Layout/Header';
-import Zodiac from '../../../config/zodiac';
-import validLangs from '@/config/validLanguages';
-import HorosConfig from '@/config/horosConfig';
+import { Poppins } from 'next/font/google';
 import { BsArrowLeftShort } from 'react-icons/bs';
-import RubricType from '../components/RubricType';
+import format from 'date-fns/format';
 import { DateRange } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'
-import format from 'date-fns/format'
-import { fetchData } from '@/GPT/FetchData.js';
-import Load from '@/components/Load';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import Multiselect from 'multiselect-react-dropdown';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-const poppins = Poppins({ subsets: ['latin'], weight: '400', });
+
+import Header from '@/components/Layout/Header';
+import Load from '@/components/Load';
+import RubricType from '../components/RubricType';
+
+import HorosConfig from '@/config/horosConfig';
+import Zodiac from '@/config/zodiac';
+import validLangs from '@/config/validLanguages';
+
+import { fetchData } from '@/Services/GPT/FetchData.js';
+
+const poppins = Poppins({ subsets: ['latin'], weight: '400' });
 
 export default function Rubrics() {
     const router = useRouter();
@@ -27,6 +31,9 @@ export default function Rubrics() {
     const [langs, setLangs] = useState('français(FR), anglais(EN), espagnol(ES), allemand(DE)')
     const [showDateRange, setshowDateRange] = useState(false)
     const [loading, setLoading] = useState(false);
+    const [dayTheme, setDayTheme] = useState(false);
+
+
     const [date, setDate] = useState([
         {
             startDate: new Date(),
@@ -106,8 +113,8 @@ export default function Rubrics() {
     const apiCall = async () => {
         setLoading(true);
         try {
-            const data = await fetchData(signe, langs, date, initialPrompt);
-            console.log('Datas Received:', data);
+            const id = await fetchData(signe, langs, date, initialPrompt);
+            router.push(`/validation/${id}`)
         } catch (error) {
             console.error('Erro when calling the API:', error);
         }
@@ -120,8 +127,11 @@ export default function Rubrics() {
     }, [date])
 
     if (loading) {
-        return <Load />
+        return <Load normal={false} />
     }
+
+
+
 
     return (
         <>
@@ -134,7 +144,7 @@ export default function Rubrics() {
                         }} />
                     </div>
                     <div className=' w-2/6'>
-                        <h2 className=' text-4xl text-center'> Critères de personnalisation</h2>
+                        <h2 className=' text-4xl text-center'>Critères de personnalisation</h2>
                     </div>
                 </div>
                 <div className=' grid grid-cols-3 gap-x-20 gap-y-10'>
@@ -169,7 +179,7 @@ export default function Rubrics() {
                 <div className='grid grid-cols-3 gap-x-20 mt-10'>
                     <div className='flex flex-col space-y-2'>
                         <label className='font-medium text-base'>Thème du jour</label>
-                        <input type="text" placeholder='Thème du jour' className='border placeholder-black h-10 w-80 text-start pl-4 bg-[#D9D9D9]' id="" />
+                        <input type="text" onChange={(e) => setDayTheme(e.target.value)} placeholder='Thème du jour' className='border placeholder-black h-10 w-80 text-start pl-4 bg-[#D9D9D9]' id="" />
                     </div>
                     <div className='flex space-x-4 col-span-2 items-start'>
                         <label className='text-xl'>Prompt:</label>
@@ -191,7 +201,6 @@ export default function Rubrics() {
                 <button className=' bg-[#64BD64] px-20 py-3 mt-20 rounded-md text-white' onClick={() => apiCall()}>Generer</button>
             </section>
         </>
-
     )
 }
 

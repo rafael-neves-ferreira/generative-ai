@@ -1,21 +1,32 @@
 import axios from 'axios';
+import store from '@/store/store';
+
 import getDaysDiff, { generateRandomId } from './Helpers';
+import { getSkyPlus } from '../APF';
+import Skyprompt from './config/skyPlusPrompt';
 
 const api = axios.create({
-    baseURL: 'http://192.168.0.56:3000', // Substitua com a URL da sua API
+    baseURL: 'http://localhost:3000',
 });
 
 export async function fetchData(zodiac, Generationlang, date, initialPrompt) {
     const formattedDays = getDaysDiff(date);
-
     const languages = Generationlang.split(', ');
     var success = false;
     var data = [];
     const datas = [];
 
+    const setLoadData = (payload) => {
+        store.dispatch({ type: 'mySlice/setLoadData', payload });
+    };
+
     const randomId = generateRandomId();
 
     for (const day of formattedDays) {
+        // const skyPlus = getSkyPlus(day)
+        // skyPlus.then(result => {
+        //     SkyPlusPrompt(result, day, dayTheme)
+        // })
         data[day] = [];
         for (const sign of zodiac) {
             data[day][sign.name] = [];
@@ -23,14 +34,16 @@ export async function fetchData(zodiac, Generationlang, date, initialPrompt) {
             const string = zodiac.map(obj => obj.name).join(', ');
             const prompt = initialPrompt.replace(zodiac ? string : 'tous les Signes', `le signe ${signName}`);
             for (var lang of languages) {
+                setLoadData({ signe: signName, lang: lang, date: day }); // To be Presented in the Load Page
                 success = false;
-                data[day][sign.name][lang.match(/\(([A-Z]+)\)$/)[1]] = [];
+                const languageCode = lang.match(/\(([A-Z]+)\)$/)[1] // Extrat FR from string "Rediger en Francais (FR)"
+                data[day][sign.name][languageCode] = [];
                 const promptLang = prompt.replace(Generationlang, lang);
                 console.log(lang, signName, promptLang);
                 while (!success) {
                     try {
                         var response = await api.post('gateway/follow-up', {
-                            requestIdentifier: '646ce847c97b49942c018288',
+                            requestIdentifier: '6471d1748c34d91bb4dcf687',
                             followUpPrompt: promptLang,
                         });
 
@@ -41,8 +54,7 @@ export async function fetchData(zodiac, Generationlang, date, initialPrompt) {
                     }
                 }
 
-                console.log(response.data.message);
-                const regex = /R0\d+:(.*?)(?=R0\d+:|$)/gs;
+                const regex = languageCode == 'EN' ? /R0\d+ (.*?)(?=R0\d+|$)/gs : /R0\d+:(.*?)(?=R0\d+:|$)/gs;
                 const matches = response?.data?.message?.matchAll(regex);
 
                 for (const match of matches) {
@@ -51,14 +63,15 @@ export async function fetchData(zodiac, Generationlang, date, initialPrompt) {
                     const noteMatch = value.match(/N\d{2}: ([\d/]+)/);
                     console.log(noteMatch);
                     const note = noteMatch ? noteMatch[1] : null;
-                    const updatedRubric = value.replace(/N\d{2}: ([\d/]+)/, '');
+                    const rubric = value.replace(/N\d{2}: ([\d/]+)/, '');
+                    const updatedRubric = languageCode == 'EN' ? rubric.split(":")[1].trim() : rubric
 
-                    data[day][sign.name][lang.match(/\(([A-Z]+)\)$/)[1]].push({ value: updatedRubric, note });
+                    data[day][sign.name][languageCode].push({ value: updatedRubric, note });
                 }
 
                 datas.push({
                     [day]: {
-                        [sign.name]: { [lang.match(/\(([A-Z]+)\)$/)[1]]: { rubrics: data[day][sign.name][lang.match(/\(([A-Z]+)\)$/)[1]] } },
+                        [sign.name]: { [languageCode]: { rubrics: data[day][sign.name][languageCode] } },
                     },
                 });
             }
@@ -73,4 +86,18 @@ export async function fetchData(zodiac, Generationlang, date, initialPrompt) {
     } else {
         localStorage.setItem('horoscope-quotidien', JSON.stringify([{ [randomId]: datas }]));
     }
+
+    return randomId
 }
+
+
+// export async function SkyPlusPrompt(skyPlusData, date, dayTheme) {
+//     const prompt = Skyprompt.prompt.replace('[date]', date)
+//         .replace('[themeDuJour]', dayTheme)
+//         .replace('[skyPlusData]', skyPlusData)
+
+//     // const response = await api.post(process.env.GPT_OPEN_IA_INTERCONNECTION_GATEWAY, {
+//     //     requestIdentifier: process.env.GPT_OPEN_IA_INTERCONNECTION_IDENTIFIERZ,
+//     //     followUpPrompt: prompt,
+//     // });
+// }
