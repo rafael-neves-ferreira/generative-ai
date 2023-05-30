@@ -7,7 +7,7 @@ import Skyprompt from './config/skyPlusPrompt';
 import Zodiac from '@/config/zodiac';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://192.168.0.56:3000',
 });
 
 export async function fetchData(zodiacSign, Generationlang, date, initialPrompt, horoscope) {
