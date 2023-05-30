@@ -9,6 +9,7 @@ export default function Login() {
 
   if (user) {
     // if user loged redirect him to Home Page
+    console.log(user);
     router.push('home');
   } else {
     return (

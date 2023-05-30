@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  signe: '',
-  lang: '',
-  date: ''
+  signe: null,
+  lang: null,
+  date: null,
+  horoscope: null,
+  error: null
 };
 
 const mySlice = createSlice({
@@ -11,10 +13,12 @@ const mySlice = createSlice({
   initialState,
   reducers: {
     setLoadData: (state, action) => {
-      const { signe, lang, date } = action.payload;
+      const { signe, lang, date, horoscope, error } = action.payload;
       state.signe = signe !== undefined ? signe : state.signe;
       state.lang = lang !== undefined ? lang : state.lang;
       state.date = date !== undefined ? date : state.date;
+      state.horoscope = horoscope !== undefined ? horoscope : state.horoscope;
+      state.error = error !== undefined ? error : state.error;
     },
   },
 });

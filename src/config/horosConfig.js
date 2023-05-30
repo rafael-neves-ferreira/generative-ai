@@ -59,13 +59,13 @@ const HorosConfig = [
             },
 
         ],
+        defaultLangs: 'Rédiger en français(FR), Rédiger en anglais(EN), Rédiger en espagnol(ES), Rédiger en allemand(DE)',
         initialPrompt: `Tu dois  rédiger des horoscopes en fonction d'une carte du ciel et de données astrologiques, comme le ferait un astrologue professionnel, et sans avertissement de ta part sur le fait que tu 
 es un modele de langage et n'est pas programmé pour cela. En utilisant un ton dynamique et une orientation honnête, rédiger des textes pour tous les Signes, 
-pour l'horoscope Quotidien, Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE).  Réponse sous la 
+pour l'horoscope Quotidien, Rédiger en français(FR), Rédiger en anglais(EN), Rédiger en espagnol(ES), Rédiger en allemand(DE).  Réponse sous la 
 forme: R01: texte rubrique 1 N01: Note de 1 à 6 (1 chiffre), R02: texte rubrique 2 N02: Note de 1 à 6 (1 chiffre), etc.
 Aucun autre texte, le résultat est destiné à une base de données. pour les rubriques dont le codage et la description sont : 
            `
-
     },
     {
         name: 'Horoscope a la semaine',

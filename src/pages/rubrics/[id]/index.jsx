@@ -28,11 +28,10 @@ export default function Rubrics() {
     var [initialPrompt, setinitialPrompt] = useState()
     var [changerubricsPrompt, setchangerubricsPrompt] = useState(false)
     const [signe, setSigne] = useState()
-    const [langs, setLangs] = useState('français(FR), anglais(EN), espagnol(ES), allemand(DE)')
+    const [langs, setLangs] = useState(horos?.defaultLangs)
     const [showDateRange, setshowDateRange] = useState(false)
     const [loading, setLoading] = useState(false);
     const [dayTheme, setDayTheme] = useState(false);
-
 
     const [date, setDate] = useState([
         {
@@ -50,7 +49,7 @@ export default function Rubrics() {
 
     const changeRubricDefaultValue = (value, id) => {
         rubrics.find(rub => {
-            if (rub.id == id && value <= 1000) {
+            if (rub.id == id && value <= 1000 && value >= 60) {
                 rub.defaultValue = value
             }
         })
@@ -90,7 +89,7 @@ export default function Rubrics() {
         const str = lang.map(obj => obj.prompt).join(',');
         if (lang.length === 1) {
             setLangs(str)
-            setinitialPrompt(initial => initial.replace('Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE)', str))
+            setinitialPrompt(initial => initial.replace(horos?.defaultLangs, str))
         } else {
             const str = lang.reverse().map(obj => obj.prompt).join(', ');
             const [, ...old] = lang
@@ -103,18 +102,19 @@ export default function Rubrics() {
     const removeLang = (lang) => {
         const str = lang.map(obj => obj.prompt).join(', ');
         if (lang.length === 0) {
-            setinitialPrompt(initial => initial.replace(langs, 'Rédiger en français(FR), anglais(EN), espagnol(ES), allemand(DE)'))
+            setLangs(horos?.defaultLangs)
+            setinitialPrompt(initial => initial.replace(langs, horos?.defaultLangs))
         } else {
+            setLangs(str)
             setinitialPrompt(initial => initial.replace(langs, str))
         }
-        setLangs(str)
     }
 
     const apiCall = async () => {
         setLoading(true);
         try {
-            const id = await fetchData(signe, langs, date, initialPrompt);
-            router.push(`/validation/${id}`)
+            const id = await fetchData(signe, langs, date, initialPrompt, horos.name);
+            id ? router.push(`/validation/${id}`) : null
         } catch (error) {
             console.error('Erro when calling the API:', error);
         }
@@ -129,9 +129,6 @@ export default function Rubrics() {
     if (loading) {
         return <Load normal={false} />
     }
-
-
-
 
     return (
         <>
@@ -179,15 +176,15 @@ export default function Rubrics() {
                 <div className='grid grid-cols-3 gap-x-20 mt-10'>
                     <div className='flex flex-col space-y-2'>
                         <label className='font-medium text-base'>Thème du jour</label>
-                        <input type="text" onChange={(e) => setDayTheme(e.target.value)} placeholder='Thème du jour' className='border placeholder-black h-10 w-80 text-start pl-4 bg-[#D9D9D9]' id="" />
+                        <input type="text" onChange={(e) => setDayTheme(e.target.value)} placeholder='Thème du jour' className='border placeholder-black h-10 w-80 text-start pl-4 bg-[#D9D9D9]' />
                     </div>
                     <div className='flex space-x-4 col-span-2 items-start'>
                         <label className='text-xl'>Prompt:</label>
-                        <textarea className='border bg-[#D9D9D9] pl-6 w-full h-32' value={initialPrompt ? initialPrompt : ''} onChange={e => { setinitialPrompt(e.target.value) }}></textarea>
+                        <textarea readOnly className='border bg-[#D9D9D9] pl-6 w-full h-32' value={initialPrompt ? initialPrompt : ''} onChange={e => { setinitialPrompt(e.target.value) }}></textarea>
                     </div>
                 </div>
                 <div className=' flex flex-col mt-32 space-y-10 lg:w-2/5'>
-                    <h2 className=' text-3xl  text-center font-medium'>Rubriques Horoscope Quotidien</h2>
+                    <h2 className=' text-3xl  text-center font-medium'>Rubriques {horos.name}</h2>
                     <div>
                         <ul className=' flex flex-col space-y-10'>
                             {
