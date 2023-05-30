@@ -102,7 +102,7 @@ export default function index() {
                         return (
                             <>
                                 <div key={index + 1} className=' 2xl:w-5/6 w-full flex flex-col justify-center'>
-                                    <RubricValidationType validateRubric={validateRubric} rubric={{ key: index + 1, value }} />
+                                    <RubricValidationType validateRubric={validateRubric} key={index} rubric={{ key: index + 1, value }} />
                                 </div>
                             </>
                         )
