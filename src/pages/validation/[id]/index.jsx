@@ -94,11 +94,11 @@ export default function index() {
                 <section className={poppins.className + ' flex flex-col items-center justify-start py-14 2xl:px-60 px-10'} >
                     <div className='flex justify-start mb-14 px-10 w-full items-center text-center'>
                         <div className=' w-full'>
-                            <h2 className=' text-4xl text-center'>Horoscope Quotidien {format(parse(horoscopeData.date, 'dd/MM/yyyy', new Date()), 'dd MMMM yyyy', { locale: fr })} <br /> {horoscopeData.sign}</h2>
+                            <h2 className=' text-4xl text-center'>Horoscope Quotidien {format(parse(horoscopeData?.date, 'dd/MM/yyyy', new Date()), 'dd MMMM yyyy', { locale: fr })} <br /> {horoscopeData?.sign}</h2>
                         </div>
                     </div>
                     <p className=' text-3xl'>Validation des Rubriques</p>
-                    {horoscopeData.value.rubrics.map((value, index) => {
+                    {horoscopeData?.value.rubrics.map((value, index) => {
                         return (
                             <>
                                 <div key={index + 1} className=' 2xl:w-5/6 w-full flex flex-col justify-center'>

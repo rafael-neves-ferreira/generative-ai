@@ -16,7 +16,7 @@ const Icons = ({ validated, validateRubric, id }) => {
 export default function RubricValidationType({ rubric, validateRubric }) {
 
     const horos = HorosConfig.filter(item => item.id == 1)[0]
-    const rubrics = horos?.rubrics.filter(item => item.id == rubric.key);
+    const rubrics = horos?.rubrics.filter(item => item.id == rubric?.key);
 
     switch (rubrics[0]?.type) {
         case 1:
