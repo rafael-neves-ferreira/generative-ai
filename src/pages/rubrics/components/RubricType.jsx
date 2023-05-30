@@ -37,7 +37,7 @@ const RubricType3 = ({ rubric }) => {
 }
 
 export default function RubricType(props) {
-    switch (props.rubric.type) {
+    switch (props.rubric?.type) {
         case 1:
             return <RubricType1 changeRubricDefaultValue={props.changeRubricDefaultValue} rubric={props.rubric} />
         case 2:
