@@ -10,40 +10,38 @@ const api = axios.create({
     baseURL: 'http://192.168.0.56:3000',
 });
 
-export async function fetchData(zodiacSign, Generationlang, date, initialPrompt, horoscope) {
-    console.log(horoscope);
+export async function fetchData(zodiacSign, Generationlang, date, initialPrompt, horoscope, dayTheme) {
     const slug = horoscope.toLowerCase().replace(/\s+/g, '-');
     const formattedDays = getDaysDiff(date);
     const languages = Generationlang.split(', ');
     var data = [];
     const datas = [];
-    const zodiac = zodiacSign ? zodiacSign : Zodiac
+    const zodiac = zodiacSign ? zodiacSign.split(', ') : Zodiac
 
     const setLoadData = (payload) => {
         store.dispatch({ type: 'mySlice/setLoadData', payload });
     };
-    console.log(languages, Generationlang);
+
     const randomId = generateRandomId();
 
     for (const day of formattedDays) {
-        // const skyPlus = getSkyPlus(day)
-        // skyPlus.then(result => {
-        //     SkyPlusPrompt(result, day, dayTheme)
-        // })
+        // const skyPlus = await getSkyPlus(day)
+        // var skyPlusData = Skyprompt.prompt.replace('[date]', day)
+        //     .replace('[themeDuJour]', dayTheme ? dayTheme : 'Saint Valentin')
+        //     .replace('[skyPlusData]', skyPlus)
+
         data[day] = [];
         for (const sign of zodiac) {
-            data[day][sign.name] = [];
-            var signName = sign.name;
+            var signName = sign.name ? sign.name : sign;
+            data[day][signName] = [];
             const string = zodiac.map(obj => obj.name).join(', ');
             const prompt = initialPrompt.replace(zodiac ? string : 'tous les Signes', `le signe ${signName}`);
             for (var lang of languages) {
-                console.log(zodiac, day, lang);
-
                 setLoadData({ signe: signName, lang: lang, date: day, horoscope }); // To be Presented in the Load Page
                 const languageCode = lang.match(/\(([A-Z]+)\)$/)[1] // Extrat FR from string "Rediger en Francais (FR)"
-                data[day][sign.name][languageCode] = [];
+                data[day][signName][languageCode] = [];
                 const promptLang = prompt.replace(Generationlang, lang);
-                console.log(lang, signName, promptLang);
+                console.log(Generationlang, lang, promptLang);
 
                 const maxAttempts = 3;
                 let success = false;
@@ -56,7 +54,7 @@ export async function fetchData(zodiacSign, Generationlang, date, initialPrompt,
                         });
 
                         success = true;
-                        break; // Sai do loop se a operação for bem-sucedida
+                        break;
                     } catch (error) {
                         console.error('An error occurred:', error);
                         success = false;
@@ -65,23 +63,24 @@ export async function fetchData(zodiacSign, Generationlang, date, initialPrompt,
 
                 if (success) {
                     const regex = languageCode == 'EN' ? /R0\d+ (.*?)(?=R0\d+|$)/gs : /R0\d+:(.*?)(?=R0\d+:|$)/gs;
-                    const matches = response?.data?.message?.matchAll(regex);
 
+                    const matches = languageCode == 'EN' ? response?.data?.message?.replace('\n', '').matchAll(regex) : response?.data?.message?.matchAll(regex);
+
+                    console.log(response?.data?.message);
                     for (const match of matches) {
                         const value = match[1].trim();
 
                         const noteMatch = value.match(/N\d{2}: ([\d/]+)/);
-                        console.log(noteMatch);
                         const note = noteMatch ? noteMatch[1] : null;
                         const rubric = value.replace(/N\d{2}: ([\d/]+)/, '');
                         const updatedRubric = languageCode == 'EN' ? rubric.split(":")[1].trim() : rubric
 
-                        data[day][sign.name][languageCode].push({ value: updatedRubric, note });
+                        data[day][signName][languageCode].push({ value: updatedRubric, note });
                     }
 
                     datas.push({
                         [day]: {
-                            [sign.name]: { [languageCode]: { rubrics: data[day][sign.name][languageCode] } },
+                            [signName]: { [languageCode]: { rubrics: data[day][signName][languageCode] } },
                         },
                     });
                 } else {
@@ -103,15 +102,3 @@ export async function fetchData(zodiacSign, Generationlang, date, initialPrompt,
 
     return randomId
 }
-
-
-// export async function SkyPlusPrompt(skyPlusData, date, dayTheme) {
-//     const prompt = Skyprompt.prompt.replace('[date]', date)
-//         .replace('[themeDuJour]', dayTheme)
-//         .replace('[skyPlusData]', skyPlusData)
-
-//     // const response = await api.post(process.env.GPT_OPEN_IA_INTERCONNECTION_GATEWAY, {
-//     //     requestIdentifier: process.env.GPT_OPEN_IA_INTERCONNECTION_IDENTIFIERZ,
-//     //     followUpPrompt: prompt,
-//     // });
-// }

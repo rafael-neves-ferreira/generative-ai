@@ -29,7 +29,7 @@ export default function RubricValidationType({ rubric, validateRubric }) {
                                 <Icons validated={rubric.value.validated} validateRubric={validateRubric} id={rubrics[0]?.id} />
                             </div>
                             <p>Note: {rubric.value.note}</p>
-                            <p>{rubric.value.value.length} caracteres</p>
+                            <p>{rubric.value.value.length}/{rubrics[0]?.defaultValue} caracteres</p>
                         </div>
                         <textarea disabled className=' bg-white w-full mb-6 px-4 py-4' value={rubric.value.value} rows="10">
 
@@ -47,7 +47,7 @@ export default function RubricValidationType({ rubric, validateRubric }) {
                                 <Icons validated={rubric.value.validated} validateRubric={validateRubric} id={rubrics[0]?.id} />
                             </div>
                             <p>Note: {rubric.value.note}</p>
-                            <p>{rubric.value.value.length} caracteres</p>
+                            <p>{rubric.value.value.length}/{rubrics[0]?.defaultValue} caracteres</p>
                         </div>
                         <textarea disabled className=' bg-white w-full mb-6 px-4 py-4' value={rubric.value.value} rows="10">
 

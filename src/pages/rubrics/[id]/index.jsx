@@ -41,10 +41,20 @@ export default function Rubrics() {
         }
     ]);
 
+    const generateRubricValue = (rubrics) => {
+        const data = []
+        return rubrics?.map(rubric => {
+            switch (rubric.type) {
+                case 3:
+                    return `\n R0${rubric.id} ${rubric.name} (${rubric.defaultValue} caractères), N0${rubric.id}: Note de 1 à 6 (1 chiffre)`
+                default:
+                    return `\n R0${rubric.id} ${rubric.name} (${rubric.defaultValue} caractères), N0${rubric.id}: Note de 1 à 6 (1 chiffre)`
+            }
+        })
+    }
 
     useEffect(() => {
-        const prom = rubrics?.map(rubric => { return `\n R0${rubric.id} ${rubric.name} (${rubric.defaultValue} caractères), N0${rubric.id}: Note de 1 à 6 (1 chiffre)` })
-        setinitialPrompt(horos?.initialPrompt + prom)
+        setinitialPrompt(horos?.initialPrompt + generateRubricValue(rubrics))
     }, [rubrics, changerubricsPrompt])
 
     const changeRubricDefaultValue = (value, id) => {
@@ -113,7 +123,7 @@ export default function Rubrics() {
     const apiCall = async () => {
         setLoading(true);
         try {
-            const id = await fetchData(signe, langs, date, initialPrompt, horos.name);
+            const id = await fetchData(signe, langs, date, initialPrompt, horos.name, dayTheme);
             id ? router.push(`/validation/${id}`) : null
         } catch (error) {
             console.error('Erro when calling the API:', error);
@@ -148,15 +158,15 @@ export default function Rubrics() {
                     <Multiselect
                         className='max-w-xs bg-[#D9D9D9] text-start'
                         options={Zodiac} // Options to display in the dropdown
-                        selectedValues={Zodiac.selectedValue} // Preselected value to persist in dropdown
+                        selectedValues={Zodiac} // Preselected value to persist in dropdown
                         displayValue="name" // Property name to display in the dropdown options
                         onSelect={(zodiac) => addSign(zodiac)}
                         onRemove={(zodiac) => removeSign(zodiac)}
                     />
                     <Multiselect
                         className='max-w-xs bg-[#D9D9D9] text-start'
+                        placeholder='Toutes les Langues'
                         options={validLangs} // Options to display in the dropdown
-                        selectedValues={Zodiac.selectedValue} // Preselected value to persist in dropdown
                         displayValue="name" // Property name to display in the dropdown options
                         onSelect={(lang) => addLang(lang)}
                         onRemove={(lang) => removeLang(lang)}
@@ -184,7 +194,7 @@ export default function Rubrics() {
                     </div>
                 </div>
                 <div className=' flex flex-col mt-32 space-y-10 lg:w-2/5'>
-                    <h2 className=' text-3xl  text-center font-medium'>Rubriques {horos.name}</h2>
+                    <h2 className=' text-3xl  text-center font-medium'>Rubriques {horos?.name}</h2>
                     <div>
                         <ul className=' flex flex-col space-y-10'>
                             {
@@ -201,7 +211,7 @@ export default function Rubrics() {
     )
 }
 
-export const getServerSideProps = withPageAuthRequired()
+// export const getServerSideProps = withPageAuthRequired()
 
 
 

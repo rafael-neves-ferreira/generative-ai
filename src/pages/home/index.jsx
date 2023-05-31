@@ -42,4 +42,4 @@ export default function index() {
   }
 }
 
-export const getServerSideProps = withPageAuthRequired()
+// export const getServerSideProps = withPageAuthRequired()

@@ -21,7 +21,7 @@ export default function Load({ normal }) {
                 <Header title='Génération' />
                 <section className={poppins.className + ' px-80 flex flex-col space-y-4 pb-10 justify-center items-center pt-40'} style={{ height: '93vh' }}>
                     <div className='flex flex-col space-y-28 h-96 w-full items-center text-center'>
-                        <h2 className=' text-4xl text-center'> {horoGenerated.horoscope} {format(parse(horoGenerated.date, 'dd/MM/yyyy', new Date()), 'dd MMMM yyyy', { locale: fr })} <br /> {horoGenerated.signe}</h2>
+                        <h2 className=' text-4xl text-center'> {horoGenerated.horoscope} {horoGenerated.date ? format(parse(horoGenerated.date, 'dd/MM/yyyy', new Date()), 'dd MMMM yyyy', { locale: fr }) : null} <br /> {horoGenerated.signe}</h2>
                         <div className=' text-xl space-y-2'>
                             <p >Votre contenu est en cours de génération:</p>
                             <p> -signe : {horoGenerated.signe} </p>
