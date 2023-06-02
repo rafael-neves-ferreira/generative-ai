@@ -35,25 +35,25 @@ const HorosConfig = [
             },
             {
                 name: 'Travail',
-                id: 6,
-                type: 2,
-                defaultValue: 250
-            },
-            {
-                name: 'Finance',
                 id: 7,
                 type: 2,
                 defaultValue: 250
             },
             {
-                name: 'Bien être',
+                name: 'Finance',
                 id: 8,
                 type: 2,
                 defaultValue: 250
             },
             {
-                name: 'Vos proches / votre entourage',
+                name: 'Bien être',
                 id: 9,
+                type: 2,
+                defaultValue: 250
+            },
+            {
+                name: 'Vos proches / votre entourage',
+                id: 10,
                 type: 2,
                 defaultValue: 250
             },

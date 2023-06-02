@@ -43,7 +43,7 @@ export default function index() {
         if (localStorageData && id) {
             const dataForId = localStorageData.find(item => Object.keys(item)[0] === id);
             const currentValue = dataForId[id][currentIndex];
-            console.log(currentIndex);
+
             if (currentValue) {
                 const date = Object.keys(currentValue)[0];
                 const sign = Object.keys(currentValue[date])[0];
@@ -102,7 +102,7 @@ export default function index() {
                         return (
                             <>
                                 <div key={index + 1} className=' 2xl:w-5/6 w-full flex flex-col justify-center'>
-                                    <RubricValidationType validateRubric={validateRubric} key={index} rubric={{ key: index + 1, value }} />
+                                    <RubricValidationType validateRubric={validateRubric} key={index} rubric={{ key: index < 6 ? index + 1 : index + 2, value }} />
                                 </div>
                             </>
                         )

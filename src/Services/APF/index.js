@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { parse, format } from 'date-fns';
 const api = axios.create({
-    baseURL: 'http://192.168.0.56:8000',
+    baseURL: 'http://127.0.0.1:8000',
 });
 
 export async function getSkyPlus(date) {
